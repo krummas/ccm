@@ -604,10 +604,15 @@ class Node(object):
         args += cmd.split()
         if capture_output:
             p = subprocess.Popen(args, env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            return p.communicate()
+            output = p.communicate()
+            if p.returncode != 0:
+                raise Exception("Nodetool failed! (%s)"%output)
+            return output
         else:
             p = subprocess.Popen(args, env=env)
             p.wait()
+            if p.returncode != 0:
+                raise Exception("Nodetool failed!")
 
     def dsetool(self, cmd):
         raise common.ArgumentError('Cassandra nodes do not support dsetool')
