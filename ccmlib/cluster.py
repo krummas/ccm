@@ -23,6 +23,7 @@ class Cluster(object):
         self.name = name
         self.nodes = {}
         self.seeds = []
+        self.default_jvm_args = []
         self.partitioner = partitioner
         self._config_options = {}
         self._dse_config_options = {}
@@ -81,6 +82,10 @@ class Cluster(object):
 
     def set_datadir_count(self, n):
         self.data_dir_count = int(n)
+        return self
+
+    def set_default_jvm_args(self, jvm_args):
+        self.default_jvm_args = jvm_args
         return self
 
     def set_install_dir(self, install_dir=None, version=None, verbose=False):
@@ -311,7 +316,7 @@ class Cluster(object):
               quiet_start=False, allow_root=False):
         if jvm_args is None:
             jvm_args = []
-
+        jvm_args.extend(self.default_jvm_args)
         common.assert_jdk_valid_for_cassandra_version(self.cassandra_version())
 
         started = []
