@@ -754,6 +754,7 @@ class Node(object):
         start = time.time()
         while time.time() - start < timeout:
             output, err, rc = self.nodetool("compactionstats")
+            print_(output)
             if pattern.search(output):
                 return
             time.sleep(1)
